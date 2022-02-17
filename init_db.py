@@ -70,6 +70,30 @@ liquidations_historical = '''CREATE TABLE IF NOT EXISTS future_market_data.liqui
          );'''
 
 
+
+
+long_short_ratio_info_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.long_short_ratio_info
+         (instrument text NOT NULL,
+         exchange text NOT NULL,
+         startDate timestamp,
+         endDate timestamp,
+         PRIMARY KEY (instrument, exchange)
+         );'''
+
+long_short_ration_historical_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.long_short_ration_historical
+         (instrument text NOT NULL,
+         exchange text NOT NULL,
+         tm timestamp,
+         ratio numeric,
+         longAccount numeric,
+         shortAccount numeric,
+         period numeric,
+         timeFrame text NOT NULL,
+         PRIMARY KEY (instrument, exchange, tm)
+         );'''
+
+
+
 def init_table():
     cur.execute(f_r_info_sql)
     cur.execute(f_r_data_latest)
@@ -77,6 +101,8 @@ def init_table():
     cur.execute(liquidations_info_sql)
     cur.execute(liquidations_latest)
     cur.execute(liquidations_historical)
+    cur.execute(long_short_ratio_info_sql)
+    cur.execute(long_short_ration_historical_sql)
     conn.commit()
 
 
