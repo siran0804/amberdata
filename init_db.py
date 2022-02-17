@@ -65,9 +65,7 @@ liquidations_historical = '''CREATE TABLE IF NOT EXISTS future_market_data.liqui
          originalQuantity numeric,
          price numeric,
          side text NOT NULL,
-         status text NOT NULL,
-         type text NOT NULL,
-         timeInForce text NOT NULL,
+         orderId text NOT NULL,
          PRIMARY KEY (instrument, exchange, tm)
          );'''
 
@@ -78,6 +76,7 @@ def init_table():
     cur.execute(f_r_data_historical)
     cur.execute(liquidations_info_sql)
     cur.execute(liquidations_latest)
+    cur.execute(liquidations_historical)
     conn.commit()
 
 
