@@ -88,6 +88,26 @@ ohlcv_historical_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.ohlcv_hi
          low numeric,
          close numeric,
          volume numeric,
+         timeInterval text NOT NULL,
+         PRIMARY KEY (instrument, exchange, tm)
+         );'''
+
+open_interest_info_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.open_interest_info
+         (instrument text NOT NULL,
+         exchange text NOT NULL,
+         startDate timestamp,
+         endDate timestamp,
+         PRIMARY KEY (instrument, exchange)
+         );'''
+
+
+open_interest_data_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.open_interest_data
+         (instrument text NOT NULL,
+         exchange text NOT NULL,
+         tm timestamp,
+         value numeric,
+         type text,
+         timeInterval text NOT NULL,
          PRIMARY KEY (instrument, exchange, tm)
          );'''
 
@@ -101,6 +121,8 @@ def init_table():
     cur.execute(long_short_ration_historical_sql)
     cur.execute(ohlcv_info_sql)
     cur.execute(ohlcv_historical_sql)
+    cur.execute(open_interest_info_sql)
+    cur.execute(open_interest_data_sql)
     conn.commit()
 
 

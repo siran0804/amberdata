@@ -4,18 +4,18 @@ from init_db import cur, conn
 import sys
 from util import *
 
-BASE_URL = "https://web3api.io/api/v2/market/futures/long-short-ratio/"
-SELECT_SQL = '''select * from future_market_data.long_short_ratio_info where startdate is not null'''
+BASE_URL = "https://web3api.io/api/v2/market/futures/open-interest/"
+SELECT_SQL = '''select * from future_market_data.open_interest_info where startdate is not null'''
 
-INSERT_HISTORICAL_SQL = '''INSERT INTO future_market_data.long_short_ration_historical (instrument,exchange,tm,
-ratio,longAccount,shortAccount,period,timeFrame) VALUES (%(instrument)s, %(exchange)s, %(timestamp)s, %(ratio)s,
-%(longAccount)s,%(shortAccount)s,%(period)s,%(timeFrame)s)'''
+INSERT_HISTORICAL_SQL = '''INSERT INTO future_market_data.open_interest_data (instrument,exchange,tm,
+value,type,timeInterval) VALUES (%(instrument)s, %(exchange)s, %(timestamp)s, %(value)s,
+%(type)s,%(timeInterval)s)'''
 
 cur.execute(SELECT_SQL)
 rows = cur.fetchall()
 
 
-def insert_future_long_short_ratio_data(instrument, exchange, start, end, timeframe):
+def insert_open_interest_data(instrument, exchange, start, end, timeinterval):
     url = BASE_URL + instrument + "/historical"
     print(url)
     if len(start) > 10:
@@ -27,7 +27,7 @@ def insert_future_long_short_ratio_data(instrument, exchange, start, end, timefr
     QUERY_STRING["startDate"] = start_timestamp
     QUERY_STRING["endDate"] = end_timestamp
     QUERY_STRING["exchange"] = exchange
-    QUERY_STRING["timeFrame"] = timeframe
+    QUERY_STRING["timeInterval"] = timeinterval
     print(QUERY_STRING)
     try:
         response = requests.request("GET", url, headers=HEARERS, params=QUERY_STRING)
@@ -36,7 +36,7 @@ def insert_future_long_short_ratio_data(instrument, exchange, start, end, timefr
         if data["payload"]['data']:
             for item in data["payload"]['data']:
                 item["instrument"] = instrument
-                item["timeFrame"] = timeframe
+                item["timeInterval"] = timeinterval
                 print(item)
                 try:
                     cur.execute(INSERT_HISTORICAL_SQL, item)
@@ -48,21 +48,21 @@ def insert_future_long_short_ratio_data(instrument, exchange, start, end, timefr
         print(e)
 
 
-def future_long_short_ratio_data_run(timeframe):
+def open_interest_data_run(timeinterval):
     for row in rows[:2]:
         monthdict, days_list = history_date(row[2], row[3])
         for i in range(len(days_list) - 1):
             start = days_list[i]
             end = days_list[i + 1]
-            if timeframe == "5m":
-                insert_future_long_short_ratio_data(row[0], row[1], start, end, '5m')
-            if timeframe == "1h":
-                insert_future_long_short_ratio_data(row[0], row[1], start, end, '1h')
-            if timeframe == "1d":
-                insert_future_long_short_ratio_data(row[0], row[1], start, end, '1d')
+            if timeinterval == "minutes":
+                insert_open_interest_data(row[0], row[1], start, end, 'minutes')
+            if timeinterval == "hours":
+                insert_open_interest_data(row[0], row[1], start, end, 'hours')
+            if timeinterval == "days":
+                insert_open_interest_data(row[0], row[1], start, end, 'days')
 
 
 if __name__ == '__main__':
-    timeframe = "1d"
-    future_long_short_ratio_data_run(timeframe)
+    timeinterval = "minutes"
+    open_interest_data_run(timeinterval)
     conn.close()

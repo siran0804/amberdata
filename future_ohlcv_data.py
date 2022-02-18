@@ -8,8 +8,8 @@ BASE_URL = "https://web3api.io/api/v2/market/futures/ohlcv/"
 SELECT_SQL = '''select * from future_market_data.ohlcv_info where startdate is not null'''
 
 INSERT_HISTORICAL_SQL = '''INSERT INTO future_market_data.ohlcv_historical (instrument,exchange,tm,
-open,high,low,close ,volume) VALUES (%(instrument)s, %(exchange)s, %(timestamp)s, %(open)s,
-%(high)s,%(low)s,%(close)s,%(volume)s)'''
+open,high,low,close ,volume,timeInterval) VALUES (%(instrument)s, %(exchange)s, %(timestamp)s, %(open)s,
+%(high)s,%(low)s,%(close)s,%(volume)s,%(timeInterval)s)'''
 
 cur.execute(SELECT_SQL)
 rows = cur.fetchall()
@@ -27,6 +27,7 @@ def insert_ohlcv_data(instrument, exchange, start, end, timeinterval):
     QUERY_STRING["startDate"] = start_timestamp
     QUERY_STRING["endDate"] = end_timestamp
     QUERY_STRING["exchange"] = exchange
+    QUERY_STRING["timeInterval"] = timeinterval
     print(QUERY_STRING)
     try:
         response = requests.request("GET", url, headers=HEARERS, params=QUERY_STRING)
@@ -35,7 +36,7 @@ def insert_ohlcv_data(instrument, exchange, start, end, timeinterval):
         if data["payload"]['data']:
             for item in data["payload"]['data']:
                 item["instrument"] = instrument
-                item["timeFrame"] = timeinterval
+                item["timeInterval"] = timeinterval
                 print(item)
                 try:
                     cur.execute(INSERT_HISTORICAL_SQL, item)
