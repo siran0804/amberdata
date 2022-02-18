@@ -16,15 +16,6 @@ f_r_info_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.funding_rates_in
          PRIMARY KEY (instrument, exchange)
          );'''
 
-f_r_data_latest = '''CREATE TABLE IF NOT EXISTS future_market_data.funding_rates_data_latest
-         (instrument text NOT NULL,
-         exchange text NOT NULL,
-         tm timestamp,
-         fundingInterval text,
-         fundingRate numeric,
-         fundingRateDaily numeric,
-         PRIMARY KEY (instrument, exchange)
-         );'''
 
 f_r_data_historical = '''CREATE TABLE IF NOT EXISTS future_market_data.funding_rates_data_historical
          (instrument text NOT NULL,
@@ -80,16 +71,36 @@ long_short_ration_historical_sql = '''CREATE TABLE IF NOT EXISTS future_market_d
          PRIMARY KEY (instrument, exchange, tm)
          );'''
 
+ohlcv_info_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.ohlcv_info
+         (instrument text NOT NULL,
+         exchange text NOT NULL,
+         startDate timestamp,
+         endDate timestamp,
+         PRIMARY KEY (instrument, exchange)
+         );'''
+
+ohlcv_historical_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.ohlcv_historical
+         (instrument text NOT NULL,
+         exchange text NOT NULL,
+         tm timestamp,
+         open numeric,
+         high numeric,
+         low numeric,
+         close numeric,
+         volume numeric,
+         PRIMARY KEY (instrument, exchange, tm)
+         );'''
 
 
 def init_table():
     cur.execute(f_r_info_sql)
-    cur.execute(f_r_data_latest)
     cur.execute(f_r_data_historical)
     cur.execute(liquidations_info_sql)
     cur.execute(liquidations_historical)
     cur.execute(long_short_ratio_info_sql)
     cur.execute(long_short_ration_historical_sql)
+    cur.execute(ohlcv_info_sql)
+    cur.execute(ohlcv_historical_sql)
     conn.commit()
 
 
