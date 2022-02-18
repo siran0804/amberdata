@@ -88,6 +88,7 @@ ohlcv_historical_sql = '''CREATE TABLE IF NOT EXISTS future_market_data.ohlcv_hi
          low numeric,
          close numeric,
          volume numeric,
+         timeInterval text NOT NULL,
          PRIMARY KEY (instrument, exchange, tm)
          );'''
 
