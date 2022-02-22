@@ -1,3 +1,5 @@
+import time
+
 import requests
 from config import *
 from init_db import cur, conn
@@ -51,9 +53,25 @@ def insert_funding_rate_historical_data(instrument, exchange, start, end, timeIn
         print(e)
 
 
-def future_funding_rate_data_run(timeInterval):
+
+
+tm_sql = '''select tm from future_market_data.funding_rates_data_historical where instrument=\'{}\' and exchange = \'{}\' order by tm desc limit 1;'''
+
+
+def future_funding_rate_data_run(timeInterval, history_or_now):
     for row in rows:
-        monthdict, days_list = history_date(row[2], row[3])
+        if history_or_now == "now":
+            time_sql = tm_sql.format(row[0], row[1])
+            cur.execute(time_sql)
+            result = cur.fetchone()
+            now_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+            monthdict, days_list = history_date(result[0], now_time)
+            if len(monthdict) == 0:
+                start = days_list[0]
+                end = days_list[-1]
+                monthdict[start] = end
+        else:
+            monthdict, days_list = history_date(row[2], row[3])
         if timeInterval == "days":
             for key, value in monthdict.items():
                 insert_funding_rate_historical_data(row[0], row[1], key, value, 'days')
@@ -66,5 +84,6 @@ def future_funding_rate_data_run(timeInterval):
 
 if __name__ == '__main__':
     timeInterval = "days"
-    future_funding_rate_data_run(timeInterval)
+    history_or_now = "now"
+    future_funding_rate_data_run(timeInterval, history_or_now)
     conn.close()
