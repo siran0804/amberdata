@@ -1,0 +1,73 @@
+APP:
+  ENVIRONMENT: test
+  DEBUG: True
+  # Only accept True or False
+
+FlOW_MONITOR:
+  OTCTYPE:
+    [
+      'GOTC',
+      'GOTC (external only)',
+      'GOTC (internal only)',
+      'Manual OTC (external only)',
+      'Manual OTC (internal only)',
+      'Manual OTC (all)',
+      'All External: (GOTC + ManualOTC external)',
+      'All',
+    ]
+
+
+
+
+DATABASE:
+  USERNAME: postgres
+  PASSWORD: galaxydigital
+  HOST: 10.45.64.76
+  PORT: 5432
+  DB: gd_tradesrecords
+
+MANUALOTC:
+  EXCHANGELIST:
+    [
+        'Binance',
+        'Bitmex',
+        'Bitstamp',
+        'CME',
+        'Coinbase',
+        'CoinFlex',
+        'Deribit',
+        'FTX',
+        'Gemini',
+        'GENERAL EXCHANGE',
+        'Huobi',
+        'JSCT Hong Kong Limited',
+        'Jump Trading LLC',
+        'Kraken',
+        'KuCoin',
+        'LMAX',
+        'LMAX Exchange',
+        'OKEx',
+        'Poloniex',
+    ]
+  INTERNAL:
+    [
+        'Derivatives Book',
+        'Derivatives Book',
+        'Derivatives Futures',
+        'FX Transfer',
+        'Galaxy Digital Lending LLC',
+        'Galaxy Digital LP',
+        'Galaxy Digital Trading - Market Making',
+        'Galaxy Digital Trading Cayman II LLC',
+        'Galaxy Digital Trading Cayman LLC',
+        'Galaxy Digital Trading HK Limited',
+        'GDLP',
+        'GDLP - Derivatives',
+        'GOTC',
+        'Huobi',
+        'Josh Lim',
+        'Live Risk Transfer',
+        'Luka Jankovic',
+        'Trey Aslanian',
+        'Brett Harner',
+    ]
