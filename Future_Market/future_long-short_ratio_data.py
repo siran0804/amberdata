@@ -25,6 +25,10 @@ def insert_future_long_short_ratio_data(instrument, exchange, start, end, timefr
     else:
         start_timestamp = start + 'T00:00:00'
     if end != "":
+        if "T" not in end:
+            end_timestamp = end + 'T00:00:00'
+        else:
+            end_timestamp = end
         end_timestamp = end + 'T00:00:00'
     QUERY_STRING["startDate"] = start_timestamp
     QUERY_STRING["endDate"] = end_timestamp
@@ -61,7 +65,7 @@ def future_long_short_ratio_data_run(history_or_now, timeframe):
             print(result)
             now_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
             monthdict, days_list = history_date(result[0], now_time)
-            days_list[-1] = now_time
+            days_list[-1] = "T".join(now_time.split(" "))
             if len(monthdict) == 0:
                 start = days_list[0]
                 end = days_list[-1]
