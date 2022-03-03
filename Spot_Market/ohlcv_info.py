@@ -4,12 +4,13 @@ from init_db import cur, conn
 import sys
 
 BASE_URL = "https://web3api.io/api/v2/market/spot/ohlcv/information"
-INSERT_SQL = '''INSERT INTO spot_market_data.ohlcv_information (pair, exchange)
- VALUES (%(pair)s, %(exchange)s) ON CONFLICT (pair, exchange) DO NOTHING'''
+INSERT_SQL = '''INSERT INTO spot_market_data.ohlcv_information (pair, exchange, startDate, endDate)
+ VALUES (%(pair)s, %(exchange)s, %(startDate)s, %(endDate)s) ON CONFLICT (pair, exchange) DO NOTHING'''
 
 
 def ohlcv_infomation_insert_data():
     try:
+        QUERY_STRING["includeDates"] = "true"
         response = requests.request("GET", BASE_URL, headers=HEARERS, params=QUERY_STRING)
     except Exception as e:
         print("response error")
@@ -26,7 +27,8 @@ def ohlcv_infomation_insert_data():
                 item = {}
                 item["exchange"] = key
                 item["pair"] = k
-                print(item)
+                item["startDate"] = v["startDate"]
+                item["endDate"] = v["endDate"]
                 try:
                     cur.execute(INSERT_SQL, item)
                 except Exception as e:

@@ -84,11 +84,59 @@ global_vwap_pair_data_sql = '''CREATE TABLE IF NOT EXISTS spot_market_data.globa
 ohlcv_info_sql = '''CREATE TABLE IF NOT EXISTS spot_market_data.ohlcv_information
          (pair text NOT NULL,
          exchange text NOT NULL,
+         startDate timestamp,
+         endDate timestamp,
          PRIMARY KEY (pair, exchange)
          );'''
 
 
+ohlcv_data_sql = '''CREATE TABLE IF NOT EXISTS spot_market_data.ohlcv_data
+         (pair text NOT NULL,
+         exchange text NOT NULL,
+         timeInterval text,
+         tm timestamp,
+         open numeric,
+         high numeric,
+         low numeric,
+         close numeric,
+         volume numeric,
+         PRIMARY KEY (pair, exchange, tm, timeInterval)
+         );'''
 
+
+price_assets_info_sql = '''CREATE TABLE IF NOT EXISTS spot_market_data.price_assets_infomation
+         (asset text NOT NULL,
+         startDate timestamp,
+         endDate timestamp,
+         PRIMARY KEY (asset)
+         );'''
+
+
+price_assets_data_sql = '''CREATE TABLE IF NOT EXISTS spot_market_data.price_assets_data
+         (asset text NOT NULL,
+         tm timestamp,
+         price text,
+         volume text,
+         timeInterval text,
+         PRIMARY KEY (asset, tm, timeInterval)
+         );'''
+
+
+price_pair_info_sql = '''CREATE TABLE IF NOT EXISTS spot_market_data.price_pair_infomation
+         (pair text NOT NULL,
+         startDate timestamp,
+         endDate timestamp,
+         PRIMARY KEY (pair)
+         );'''
+
+price_pair_data_sql = '''CREATE TABLE IF NOT EXISTS spot_market_data.price_pair_data
+         (pair text NOT NULL,
+         tm timestamp,
+         price text,
+         volume text,
+         timeInterval text,
+         PRIMARY KEY (pair, tm, timeInterval)
+         );'''
 
 def init_table():
     cur.execute(global_twap_assets_info_sql)
@@ -102,6 +150,13 @@ def init_table():
     cur.execute(global_vwap_pair_data_sql)
 
     cur.execute(ohlcv_info_sql)
+    cur.execute(ohlcv_data_sql)
+
+    cur.execute(price_assets_info_sql)
+    cur.execute(price_assets_data_sql)
+    cur.execute(price_pair_data_sql)
+    cur.execute(price_pair_info_sql)
+
     conn.commit()
 
 
